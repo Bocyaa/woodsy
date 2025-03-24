@@ -41,11 +41,18 @@ function Page() {
         <Image
           src={about1}
           alt='Family sitting around a fire pit in front of cabin'
+          placeholder='blur'
+          quality={80}
         />
       </div>
 
       <div className='col-span-2'>
-        <Image src={about2} alt='Family that manages The Wild Oasis' />
+        <Image
+          src={about2}
+          alt='Family that manages The Wild Oasis'
+          placeholder='blur'
+          quality={80}
+        />
       </div>
 
       <div className='col-span-3'>
