@@ -2,8 +2,7 @@
 
 import { useState } from 'react';
 import { updateGuest } from '../_lib/actions';
-import { useFormStatus } from 'react-dom';
-import SubmitButton from '@/app/_components/SubmitButton';
+import SubmitButton from './SubmitButton';
 
 function UpdateProfileForm({ guest, children }) {
   const [count, setCount] = useState();
@@ -58,7 +57,7 @@ function UpdateProfileForm({ guest, children }) {
       </div>
 
       <div className='flex justify-end items-center gap-6'>
-        <SubmitButton pendingLabel='Updating ...'>Update profile</SubmitButton>;
+        <SubmitButton pendingLabel='Updating...'>Update profile</SubmitButton>
       </div>
     </form>
   );

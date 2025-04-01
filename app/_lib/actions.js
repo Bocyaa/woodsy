@@ -32,6 +32,31 @@ export async function updateGuest(formData) {
   revalidatePath('/account');
 }
 
+export async function createReservation(bookingData, formData) {
+  const session = await auth();
+  if (!session) throw new Error('You must be logged in');
+
+  const newBooking = {
+    ...bookingData,
+    guestId: session.user.guestId,
+    numGuests: Number(formData.get('numGuests')),
+    observations: formData.get('observations').slice(0, 1000),
+    extrasPrice: 0,
+    totalPrice: bookingData.cabinPrice,
+    isPaid: false,
+    hasBreakfast: false,
+    status: 'unconfirmed',
+  };
+
+  const { error } = await supabase.from('bookings').insert([newBooking]);
+
+  if (error) throw new Error('Booking could not be created');
+
+  revalidatePath(`/cabins/${bookingData.cabinId}`);
+
+  redirect('/cabins/thankyou');
+}
+
 export async function updateReservation(formData) {
   const bookingId = Number(formData.get('bookingId'));
 
@@ -72,9 +97,9 @@ export async function deleteReservation(bookingId) {
   if (!session) throw new Error('You must be logged in');
 
   const guestBookings = await getBookings(session.user.guestId);
-  const guestBookingsIds = guestBookings.map((booking) => booking.id);
+  const guestBookingIds = guestBookings.map((booking) => booking.id);
 
-  if (!guestBookingsIds.includes(bookingId))
+  if (!guestBookingIds.includes(bookingId))
     throw new Error('You are not allowed to delete this booking');
 
   const { error } = await supabase
@@ -84,7 +109,6 @@ export async function deleteReservation(bookingId) {
 
   if (error) throw new Error('Booking could not be deleted');
 
-  // TAG - there are more ways to revalidate, e.g. Tag. Check out the docs.
   revalidatePath('/account/reservations');
 }
 
